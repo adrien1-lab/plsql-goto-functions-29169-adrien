@@ -1,1 +1,33 @@
+SET SERVEROUTPUT ON;
+
+DECLARE
+    PROCEDURE show(p_label VARCHAR2, p_value VARCHAR2) IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE(p_label || ': ' || p_value);
+    END;
+BEGIN
+    -- B1 (already tested earlier: FN_ANNUAL_SALARY(1) returned NULL for a missing id)
+    show('B1 emp 999 (missing)', NVL(TO_CHAR(fn_annual_salary(999)), 'NULL'));
+
+    -- B2
+    show('B2 years of service emp 105', fn_years_of_service(105));
+    show('B2 emp 999 (missing)',        NVL(TO_CHAR(fn_years_of_service(999)), 'NULL'));
+
+    -- B3
+    show('B3 tax on 300000', fn_calculate_tax(300000));
+    show('B3 tax on 450000 (emp 103 salary)', fn_calculate_tax(450000));
+
+    -- B4
+    show('B4 dept 30',       fn_dept_name(30));
+    show('B4 dept 99 (missing)', fn_dept_name(99));
+
+    -- B3 rejects a negative salary
+    BEGIN
+        show('B3 tax on -5', fn_calculate_tax(-5));
+    EXCEPTION
+        WHEN OTHERS THEN
+            show('B3 negative salary rejected', SQLERRM);
+    END;
+END;
+/
 
