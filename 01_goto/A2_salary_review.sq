@@ -1,1 +1,28 @@
+-- A2: Salary review using GOTO
+SET SERVEROUTPUT ON;
 
+DECLARE
+    v_salary employees.salary%TYPE;
+BEGIN
+    SELECT salary
+    INTO v_salary
+    FROM employees
+    WHERE employee_id = 103;   -- Brian Niyonzima, 450000
+
+    IF v_salary < 500000 THEN
+        GOTO salary_review;
+    ELSE
+        GOTO salary_ok;
+    END IF;
+
+    <<salary_review>>
+    DBMS_OUTPUT.PUT_LINE('Salary requires review: ' || v_salary);
+    GOTO finished;
+
+    <<salary_ok>>
+    DBMS_OUTPUT.PUT_LINE('Salary is acceptable: ' || v_salary);
+
+    <<finished>>
+    NULL;
+END;
+/
